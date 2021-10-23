@@ -9,7 +9,7 @@ const Card = props => {
                   <h6 className="card-subtitle mb-2 text-muted">
                      {place.address.addressLocality}, {place.address.addressRegion}
                   </h6>
-                  <a href={place.website} className="btn">
+                  <a href={place.website} target="_blank" className="btn">
                      <i className="fas fa-link" />
                      Visit Site
                   </a>

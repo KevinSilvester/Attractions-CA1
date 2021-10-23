@@ -11,12 +11,12 @@ const App = () => {
          .then(jsonData => {
             let temp = [];
             jsonData.results.map((e) => {
-               const place = {
+               const attraction = {
                   name: e.name,
                   type: e["@type"],
                   address: {
-                     addressLocality: e.address.addressLocality,
-                     addressRegion: e.address.addressRegion,
+                     locality: e.address.addressLocality,
+                     county: e.address.addressRegion,
                   },
                   coordinates: {
                      latitude: e.geo.latitude,
@@ -27,7 +27,7 @@ const App = () => {
                   phone: e.telephone,
                   website: e.url,
                };
-               temp.push(place);
+               temp.push(attraction);
             });
             temp.sort((a, b) => (a.name < b.name ? -1 : 1))
             setFetchInfo({ error: null, loaded: true, data: temp });
@@ -46,7 +46,7 @@ const App = () => {
          setDisplayData(filterData)
          return
       }
-      setDisplayData([...filterData.filter(place => place.name.toLowerCase().match(new RegExp(`${searchTerm.toLowerCase()}`)))])
+      setDisplayData([...filterData.filter(place => place.name.toLowerCase().match(new RegExp(searchTerm.toLowerCase())))])
    }
 
    if (fetchInfo.error) return <div>Fetch Failed</div>
