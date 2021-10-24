@@ -46,7 +46,7 @@ const App = () => {
          setDisplayData(filterData)
          return
       }
-      setDisplayData([...filterData.filter(place => place.name.toLowerCase().match(new RegExp(searchTerm.toLowerCase())))])
+      setDisplayData([...filterData.filter(attraction => attraction.name.toLowerCase().match(new RegExp(searchTerm.toLowerCase())))])
    }
 
    if (fetchInfo.error) return <div>Fetch Failed</div>

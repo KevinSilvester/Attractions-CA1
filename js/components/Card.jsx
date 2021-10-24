@@ -1,5 +1,5 @@
 const Card = props => {
-   const attraction = props.place
+   const attraction = props.attraction
    return (
          <div className="col-md-4">
             <div className="card">
