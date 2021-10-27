@@ -1,7 +1,7 @@
 const { useState, useEffect } = React;
 
 const App = () => {
-   const [fetchInfo, setFetchInfo] = useState({ error: null, loaded: false, data: [] });
+   const [fetchInfo, setFetchInfo] = useState({ error: null, loaded: false });
    const [filterData, setFilterData] = useState([])
    const [displayData, setDisplayData] = useState([])
 
@@ -29,12 +29,11 @@ const App = () => {
                };
                temp.push(attraction);
             });
-            temp.sort((a, b) => (a.name < b.name ? -1 : 1))
-            setFetchInfo({ error: null, loaded: true, data: temp });
+            setFetchInfo({ error: null, loaded: true });
             setFilterData(temp)
             setDisplayData(temp)
          })
-         .catch(err => setFetchInfo({ error: err, loaded: true, data: [] }));
+         .catch(err => setFetchInfo({ error: err, loaded: true }));
    }, []);
 
    const handleFilterSort = (data, sortVal) => {
