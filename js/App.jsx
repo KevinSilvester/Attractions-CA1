@@ -10,8 +10,10 @@ const App = () => {
          .then(res => res.json())
          .then(jsonData => {
             let temp = [];
+            let id = 0
             jsonData.results.map((e) => {
                const attraction = {
+                  id: id,
                   name: e.name,
                   type: e["@type"],
                   address: {
@@ -28,6 +30,7 @@ const App = () => {
                   website: e.url,
                };
                temp.push(attraction);
+               id++
             });
             setFetchInfo({ error: null, loaded: true });
             setFilterData(temp)
