@@ -11,7 +11,7 @@ const App = () => {
    const [displayData, setDisplayData] = useState(null)
 
    useEffect(() => {
-      fetch('http://localhost:8000/results')
+      // fetch('http://localhost:8000/results')
       fetch('https://failteireland.azure-api.net/opendata-api/v1/attractions')
          .then((res) => res.json())
          .then((jsonData) => {
