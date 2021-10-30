@@ -12,11 +12,13 @@ const App = () => {
 
    useEffect(() => {
       fetch('http://localhost:8000/results')
+      fetch('https://failteireland.azure-api.net/opendata-api/v1/attractions')
          .then((res) => res.json())
          .then((jsonData) => {
             let temp = []
             let index = 0
-            jsonData.map((e) => {
+            // jsonData.map((e) => {
+               jsonData.results.map((e) => {
                const place = {
                   id: index,
                   name: e.name,
