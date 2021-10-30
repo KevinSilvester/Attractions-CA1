@@ -1,72 +1,82 @@
-const { useState, useEffect } = React;
+const { useState, useEffect, useContext, useReducer, useRef, useMemo, useCallback, createContext } = React;
+const { createPortal } = ReactDOM
 
 const App = () => {
-   const [fetchInfo, setFetchInfo] = useState({ error: null, loaded: false });
-   const [filterData, setFilterData] = useState([])
-   const [displayData, setDisplayData] = useState([])
+   const { e, r, a } = React.useContext(DataCtx)
+   const [edit, setEdit] = e
+   const [add, setAdd] = a
+   const [remove, setRemove] = r
+   const [fetchInfo, setFetchInfo] = useState({ error: null, loaded: false })
+   const [filterData, setFilterData] = useState(null)
+   const [displayData, setDisplayData] = useState(null)
 
    useEffect(() => {
-      fetch("https://failteireland.azure-api.net/opendata-api/v1/attractions")
-         .then(res => res.json())
-         .then(jsonData => {
-            let temp = [];
-            let id = 0
-            jsonData.results.map((e) => {
-               const attraction = {
-                  id: id,
+      fetch('http://localhost:8000/results')
+         .then((res) => res.json())
+         .then((jsonData) => {
+            let temp = []
+            let index = 0
+            jsonData.map((e) => {
+               const place = {
+                  id: index,
                   name: e.name,
-                  type: e["@type"],
+                  type: e['@type'],
                   address: {
                      locality: e.address.addressLocality,
-                     county: e.address.addressRegion,
-                  },
-                  coordinates: {
-                     latitude: e.geo.latitude,
-                     longitude: e.geo.longitude,
+                     county: e.address.addressRegion
                   },
                   image: e.image.url,
                   tags: e.tags,
                   phone: e.telephone,
-                  website: e.url,
-               };
-               temp.push(attraction);
-               id++
-            });
-            setFetchInfo({ error: null, loaded: true });
+                  website: e.url
+               }
+               temp.push(place)
+               index++
+            })
+            setFetchInfo({ error: null, loaded: true })
             setFilterData(temp)
             setDisplayData(temp)
          })
-         .catch(err => setFetchInfo({ error: err, loaded: true }));
-   }, []);
+         .catch((err) => setFetchInfo({ error: err, loaded: true }))
+   }, [])
 
-   const handleFilterSort = (data, sortVal) => {
+   const handleFilterSort = (data, sortVal) => { }
 
-   }
-
-   const handleSearch = searchTerm => {
+   const handleSearch = (searchTerm) => {
       if (searchTerm.length === 0) {
-         setDisplayData(filterData)
+         setDisplayData([...filterData])
+         console.log('handleSearch')
          return
       }
-      setDisplayData([...filterData.filter(attraction => attraction.name.toLowerCase().match(new RegExp(searchTerm.toLowerCase())))])
+      console.log('handleSearch')
+      setDisplayData([
+         ...filterData.filter((place) =>
+            place.name.toLowerCase().match(new RegExp(searchTerm.toLowerCase()))
+         )
+      ])
    }
+
+   const TableComp = useMemo(() => <Table data={displayData} />, [displayData])
 
    if (fetchInfo.error) return <div>Fetch Failed</div>
 
-   if (!fetchInfo.loaded) return <div>Loading....</div>
+   if (displayData === null) return <div>Loading....</div>
 
    return (
       <div>
+         {console.log(edit, add, remove)}
          <Search searchTerm={handleSearch} />
-         <Table data={displayData} />
+         {TableComp}
       </div>
-   );
+   )
 };
 
 ReactDOM.render(
    <React.StrictMode>
-      <App />
+      <DataProvider>
+         <App />
+      </DataProvider>
    </React.StrictMode>,
-   document.getElementById("root")
-);
+   document.getElementById('root')
+)
 
