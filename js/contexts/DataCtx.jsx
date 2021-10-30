@@ -1,9 +1,12 @@
-const DataCtx = React.createContext()
+const { useState, useEffect, useContext, useReducer, useRef, useMemo, useCallback, createContext } = React;
+const { createPortal } = ReactDOM
+
+const DataCtx = createContext()
 
 const DataProvider = (props) => {
-   const [edit, setEdit] = React.useState({})
-   const [remove, setRemove] = React.useState({})
-   const [add, setAdd] = React.useState({})
+   const [edit, setEdit] = useState({})
+   const [remove, setRemove] = useState({})
+   const [add, setAdd] = useState({})
    const counties = [
 		'Antrim',
 		'Armagh',

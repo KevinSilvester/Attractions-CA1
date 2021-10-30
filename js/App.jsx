@@ -1,8 +1,5 @@
-const { useState, useEffect, useContext, useReducer, useRef, useMemo, useCallback, createContext } = React;
-const { createPortal } = ReactDOM
-
 const App = () => {
-   const { e, r, a } = React.useContext(DataCtx)
+   const { e, r, a } = useContext(DataCtx)
    const [edit, setEdit] = e
    const [add, setAdd] = a
    const [remove, setRemove] = r
