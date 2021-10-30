@@ -44,7 +44,6 @@ const App = () => {
    const handleSearch = (searchTerm) => {
       if (searchTerm.length === 0) {
          setDisplayData([...filterData])
-         console.log('handleSearch')
          return
       }
       console.log('handleSearch')
@@ -56,6 +55,7 @@ const App = () => {
    }
 
    const TableComp = useMemo(() => <Table data={displayData} />, [displayData])
+   const SearchCom = useMemo(() => <Search searchTerm={handleSearch} />, [filterData])
 
    if (fetchInfo.error) return <div>Fetch Failed</div>
 
@@ -63,7 +63,6 @@ const App = () => {
 
    return (
       <div>
-         {console.log(edit, add, remove)}
          <Search searchTerm={handleSearch} />
          {TableComp}
       </div>

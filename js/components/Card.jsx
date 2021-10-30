@@ -8,7 +8,6 @@ const Card = (props) => {
 
    return (
       <div className='col-md-4'>
-         {console.log('Card rendered', attraction.id)}
          {open && <Modal attr={attraction} close={handleOpen} edit />}
          <div className='card'>
             <img
@@ -40,7 +39,7 @@ const Card = (props) => {
                         className={`card__link ${!attraction.website && 'disabled'}`}
                         href={attraction.website}
                      >
-                        {attraction.website ? <i className='fas fa-link' /> : <i class='fas fa-unlink'></i>}
+                        {attraction.website ? <i className='fas fa-link' /> : <i className='fas fa-unlink'></i>}
                         <span>Visit Site</span>
                      </a>
                   </Button>
