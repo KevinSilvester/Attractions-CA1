@@ -1,20 +1,18 @@
 const App = () => {
-   const { e, r, a } = useContext(DataCtx)
-   const [edit, setEdit] = e
-   const [add, setAdd] = a
-   const [remove, setRemove] = r
-   const [fetchInfo, setFetchInfo] = useState({ error: null, loaded: false })
-   const [filterData, setFilterData] = useState(null)
-   const [displayData, setDisplayData] = useState(null)
+   const { _edit, _remove, _add } = useContext(DataCtx)
+   const [edit, setEdit] = _edit
+   const [add, setAdd] = _add
+   const [remove, setRemove] = _remove
+
+   const [state, dispatch] = useReducer(dataReducer, initialState)
+   const { data, displayData, error, loaded } = state
 
    useEffect(() => {
-      // fetch('http://localhost:8000/results')
-      fetch('https://failteireland.azure-api.net/opendata-api/v1/attractions')
-         .then((res) => res.json())
-         .then((jsonData) => {
+      fetch('http://localhost:8000/results')
+         .then(res => res.json())
+         .then(jsonData => {
             let temp = []
-            // jsonData.map((e) => {
-               jsonData.results.map((e) => {
+            jsonData.map(e => {
                const place = {
                   id: randomId(),
                   name: e.name,
@@ -23,49 +21,45 @@ const App = () => {
                      locality: e.address.addressLocality,
                      county: e.address.addressRegion
                   },
-                  image: e.image.url,
                   tags: e.tags,
                   phone: e.telephone,
                   website: e.url
                }
                temp.push(place)
             })
-            setFetchInfo({ error: null, loaded: true })
-            setFilterData(temp)
-            setDisplayData(temp)
+            dispatch({ type: 'FETCH_SUCCESS', data: temp })
          })
-         .catch((err) => setFetchInfo({ error: err, loaded: true }))
+         .catch(err => dispatch({ type: 'FETCH_FAIL', error: err }))
    }, [])
 
-   const handleFilterSort = (data, sortVal) => { }
+   // useEffect(() => {
+   //    if (loaded && edit !== {})
+   //       dispatch({ type: 'EDIT', attraction: edit })
+   //    setEdit({})
+   // }, [edit])
 
-   const handleSearch = (searchTerm) => {
-      if (searchTerm.length === 0) {
-         setDisplayData([...filterData])
-         return
-      }
-      console.log('handleSearch')
-      setDisplayData([
-         ...filterData.filter((place) =>
-            place.name.toLowerCase().match(new RegExp(searchTerm.toLowerCase()))
-         )
-      ])
+   const handleFilterSort = (data, sortVal) => {}
+
+   const handleSearch = query => {
+      query.length === 0
+         ? dispatch({ type: 'SEARCH_CLEAR' })
+         : dispatch({ type: 'SEARCH_QUERY', query: querdy })
    }
 
    const TableComp = useMemo(() => <Table data={displayData} />, [displayData])
 
-   if (fetchInfo.error) return <div>Fetch Failed</div>
+   if (error) return <div>Fetch Failed</div>
 
-   if (displayData === null) return <div>Loading....</div>
+   if (!loaded) return <div>Loading....</div>
 
    return (
       <div>
-         {console.log(edit)}
-         <Search searchTerm={handleSearch} />
+         {console.log(edit, add, remove)}
+         <Search query={handleSearch} />
          {TableComp}
       </div>
    )
-};
+}
 
 ReactDOM.render(
    <React.StrictMode>
@@ -75,4 +69,3 @@ ReactDOM.render(
    </React.StrictMode>,
    document.getElementById('root')
 )
-

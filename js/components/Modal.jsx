@@ -1,8 +1,7 @@
 const Modal = (props) => {
-   const { e, a, c } = useContext(DataCtx)
-   const [edit, setEdit] = e
-   const [add, setAdd] = a
-   const counties = c
+   const { _edit, _add } = useContext(DataCtx)
+   const [edit, setEdit] = _edit
+   const [add, setAdd] = _add
 
    const close = props.close
    const attraction = props.attr
@@ -38,7 +37,6 @@ const Modal = (props) => {
             locality: locality,
             county: county
          },
-         image: img,
          tags: tags,
          phone: phone,
          website: web
