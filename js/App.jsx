@@ -13,11 +13,10 @@ const App = () => {
          .then((res) => res.json())
          .then((jsonData) => {
             let temp = []
-            let index = 0
             // jsonData.map((e) => {
                jsonData.results.map((e) => {
                const place = {
-                  id: index,
+                  id: randomId(),
                   name: e.name,
                   type: e['@type'],
                   address: {
@@ -30,7 +29,6 @@ const App = () => {
                   website: e.url
                }
                temp.push(place)
-               index++
             })
             setFetchInfo({ error: null, loaded: true })
             setFilterData(temp)
@@ -55,7 +53,6 @@ const App = () => {
    }
 
    const TableComp = useMemo(() => <Table data={displayData} />, [displayData])
-   const SearchCom = useMemo(() => <Search searchTerm={handleSearch} />, [filterData])
 
    if (fetchInfo.error) return <div>Fetch Failed</div>
 
@@ -63,6 +60,7 @@ const App = () => {
 
    return (
       <div>
+         {console.log(edit)}
          <Search searchTerm={handleSearch} />
          {TableComp}
       </div>
