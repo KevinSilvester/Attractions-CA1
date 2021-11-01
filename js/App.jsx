@@ -32,18 +32,19 @@ const App = () => {
          .catch(err => dispatch({ type: 'FETCH_FAIL', error: err }))
    }, [])
 
-   // useEffect(() => {
-   //    if (loaded && edit !== {})
-   //       dispatch({ type: 'EDIT', attraction: edit })
-   //    setEdit({})
-   // }, [edit])
+   useEffect(() => {
+      console.log(edit)
+      if (Object.keys(edit).length !== 0) {
+         dispatch({ type: 'EDIT', attraction: edit })
+      }
+   }, [edit])
 
    const handleFilterSort = (data, sortVal) => {}
 
    const handleSearch = query => {
       query.length === 0
          ? dispatch({ type: 'SEARCH_CLEAR' })
-         : dispatch({ type: 'SEARCH_QUERY', query: querdy })
+         : dispatch({ type: 'SEARCH_QUERY', query: query })
    }
 
    const TableComp = useMemo(() => <Table data={displayData} />, [displayData])
@@ -54,7 +55,6 @@ const App = () => {
 
    return (
       <div>
-         {console.log(edit, add, remove)}
          <Search query={handleSearch} />
          {TableComp}
       </div>

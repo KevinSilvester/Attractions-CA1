@@ -46,11 +46,30 @@ const dataReducer = (state, action) => {
          }
       }
 
+      // https://stackoverflow.com/questions/45673783/replace-array-entry-with-spread-syntax-in-one-line-of-code
       case 'EDIT': {
          return {
             ...state,
-            data: [...state.data.splice(state.data.findIndex(e => e.id === action.attraction.id), 1, action.attraction)],
-            displayData: [...state.data.splice(state.data.findIndex(e => e.id === action.attraction.id), 1, action.attraction)]
+            data: [
+               ...state.data.slice(
+                  0,
+                  state.data.findIndex(e => e.id === action.attraction.id)
+               ),
+               action.attraction,
+               ...state.data.slice(
+                  state.data.findIndex(e => e.id === action.attraction.id) + 1
+               )
+            ],
+            displayData: [
+               ...state.displayData.slice(
+                  0,
+                  state.displayData.findIndex(e => e.id === action.attraction.id)
+               ),
+               action.attraction,
+               ...state.displayData.slice(
+                  state.displayData.findIndex(e => e.id === action.attraction.id) + 1
+               )
+            ]
          }
       }
 
