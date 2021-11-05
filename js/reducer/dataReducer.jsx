@@ -73,6 +73,51 @@ const dataReducer = (state, action) => {
          }
       }
 
+      case 'REMOVE': {
+         return {
+            ...state,
+            data: [
+               ...state.data.slice(
+                  0,
+                  state.data.findIndex(e => e.id === action.attraction.id)
+               ),
+               ...state.data.slice(
+                  state.data.findIndex(e => e.id === action.attraction.id) + 1
+               )
+            ],
+            displayData: [
+               ...state.displayData.slice(
+                  0,
+                  state.displayData.findIndex(e => e.id === action.attraction.id)
+               ),
+               ...state.displayData.slice(
+                  state.displayData.findIndex(e => e.id === action.attraction.id) + 1
+               )
+            ]
+         }
+      }
+
+      case 'SORT_NAME': {
+         return {
+            ...state,
+            displayData: [...state.data.sort((a, b) => (a.name < b.name ? -1 : 1))]
+         }
+      }
+
+      case 'SORT_COUNTY': {
+         return {
+            ...state,
+            displayData: [...state.data.sort((a, b) => (a.address.county < b.address.county ? -1 : 1))]
+         }
+      }
+
+      case 'FILTER_COUNTY': {
+         return {
+            ...state,
+            displayData: [...state.data.filter(e => e.address.county.toLowerCase().match(new RegExp(action.query.toLowerCase())))]
+         }
+      }
+
       default:
          break;
    }

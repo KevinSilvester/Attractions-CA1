@@ -39,7 +39,12 @@ const App = () => {
       }
    }, [edit])
 
-   const handleFilterSort = (data, sortVal) => {}
+   useEffect(() => {
+      if (Object.keys(remove).length !== 0) {
+         dispatch({ type: 'REMOVE', attraction: remove })
+         setEdit({})
+      }
+   }, [remove])
 
    const handleSearch = query => {
       query.length === 0
@@ -47,7 +52,17 @@ const App = () => {
          : dispatch({ type: 'SEARCH_QUERY', query: query })
    }
 
-   const TableComp = useMemo(() => <Table data={displayData} />, [displayData])
+   const handleSort = value => {
+      if (value === "1") {
+         dispatch({ type: 'SORT_NAME' })
+      } else if (value === "2") {
+         dispatch({ type: 'SORT_COUNTY' })
+      }
+   }
+
+   const handleFilter = query => {
+      dispatch({ type: 'FILTER_COUNTY', query: query })
+   }
 
    if (error) return <div>Fetch Failed</div>
 
@@ -56,7 +71,13 @@ const App = () => {
    return (
       <div>
          <Search query={handleSearch} />
-         {TableComp}
+         <Sort value={handleSort} />
+         <Filter query={handleFilter} />
+         <Table>
+            {displayData.map(attraction => (
+               <Card place={attraction} key={attraction.id} />
+            ))}
+         </Table>
       </div>
    )
 }
