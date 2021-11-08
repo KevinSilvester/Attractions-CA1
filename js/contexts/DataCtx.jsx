@@ -1,7 +1,7 @@
-const { useState, useEffect, useContext, useReducer, useRef, useMemo, useCallback, createContext } = React;
+const { useState, useEffect, useContext, useReducer, useRef, useMemo, useCallback } = React;
 const { createPortal } = ReactDOM
 
-const DataCtx = createContext()
+const DataCtx = React.createContext()
 
 const DataProvider = (props) => {
    const [edit, setEdit] = useState({})

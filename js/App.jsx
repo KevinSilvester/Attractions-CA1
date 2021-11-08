@@ -5,15 +5,18 @@ const App = () => {
    const [remove, setRemove] = _remove
 
    const [state, dispatch] = useReducer(dataReducer, initialState)
-   const { data, displayData, error, loaded } = state
+   const { displayData, error, loaded } = state
+
+   const [disabled, setDisabled] = useState(false)
+   const [active, setActive] = useState('')
 
    useEffect(() => {
-      fetch('http://localhost:8000/results')
+      fetch('https://failteireland.azure-api.net/opendata-api/v1/attractions')
          .then(res => res.json())
          .then(jsonData => {
             let temp = []
-            jsonData.map(e => {
-               const place = {
+            jsonData.results.map(e => {
+               const attraction = {
                   id: randomId(),
                   name: e.name,
                   type: e['@type'],
@@ -25,7 +28,7 @@ const App = () => {
                   phone: e.telephone,
                   website: e.url
                }
-               temp.push(place)
+               temp.push(attraction)
             })
             dispatch({ type: 'FETCH_SUCCESS', data: temp })
          })
@@ -33,16 +36,23 @@ const App = () => {
    }, [])
 
    useEffect(() => {
-      console.log(edit)
+      if (Object.keys(add).length !== 0) {
+         dispatch({ type: 'ADD', attraction: add })
+         setAdd({})
+      }
+   }, [add])
+
+   useEffect(() => {
       if (Object.keys(edit).length !== 0) {
          dispatch({ type: 'EDIT', attraction: edit })
+         setEdit({})
       }
    }, [edit])
 
    useEffect(() => {
       if (Object.keys(remove).length !== 0) {
          dispatch({ type: 'REMOVE', attraction: remove })
-         setEdit({})
+         setRemove({})
       }
    }, [remove])
 
@@ -52,16 +62,17 @@ const App = () => {
          : dispatch({ type: 'SEARCH_QUERY', query: query })
    }
 
-   const handleSort = value => {
-      if (value === "1") {
-         dispatch({ type: 'SORT_NAME' })
-      } else if (value === "2") {
-         dispatch({ type: 'SORT_COUNTY' })
-      }
+   const sortName = () => (dispatch({ type: 'SORT_NAME' }), setActive('name'))
+
+   const sortCounty = () => {
+      !disabled && (dispatch({ type: 'SORT_COUNTY' }), setActive('county'))
    }
 
    const handleFilter = query => {
-      dispatch({ type: 'FILTER_COUNTY', query: query })
+      setActive('')
+      query === 'All Counties'
+         ? (dispatch({ type: 'FILTER_CLEAR' }), setDisabled(false))
+         : (dispatch({ type: 'FILTER_COUNTY', query: query }), setDisabled(true))
    }
 
    if (error) return <div>Fetch Failed</div>
@@ -69,16 +80,37 @@ const App = () => {
    if (!loaded) return <div>Loading....</div>
 
    return (
-      <div>
-         <Search query={handleSearch} />
-         <Sort value={handleSort} />
-         <Filter query={handleFilter} />
+      <Container>
+         <NavBar search={<Search query={handleSearch} />}>
+            <NavItem click={sortName} active={active === 'name'}>
+               Sort by Name
+               <i className='fas fa-sort-alpha-down'></i>
+            </NavItem>
+            <NavItem click={sortCounty} disabled={disabled} active={active === 'county'}>
+               Sort by County
+               <i className='fas fa-sort-alpha-down'></i>
+            </NavItem>
+            <NavItem
+               dropdown
+               attributes={{
+                  id: 'dropdown',
+                  ['data-bs-toggle']: 'dropdown',
+                  ['aria-expanded']: false,
+                  role: 'button'
+               }}
+               filter={<Filter query={handleFilter} />}
+            >
+               Filter by County
+               <i className='fas fa-sort-down'></i>
+            </NavItem>
+         </NavBar>
          <Table>
+            <Add />
             {displayData.map(attraction => (
                <Card place={attraction} key={attraction.id} />
             ))}
          </Table>
-      </div>
+      </Container>
    )
 }
 

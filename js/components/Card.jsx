@@ -1,6 +1,8 @@
-const Card = (props) => {
+// https://codepen.io/nikki-peel/pen/RwavQer
+const Card = props => {
    const attraction = props.place
    const [open, setOpen] = useState(false)
+   const [map, setMap] = useState(false)
 
    const { _remove } = useContext(DataCtx)
    const [remove, setRemove] = _remove
@@ -11,18 +13,23 @@ const Card = (props) => {
 
    const handleDelete = () => setRemove(attraction)
 
-   const handleLink = () => {return}
-
    return (
       <div className='col-md-4'>
          {open && <Modal attr={attraction} close={handleOpen} edit />}
          <div className='card'>
-            <div className="card-img-top card__img-container">
-               <img
-                  src='./assets/ireland.svg'
-                  alt='Ireland image'
-                  className='card__img'
-               />
+            <div
+               className='card-img-top card__img-container'
+               onClick={() => setMap(true)}
+            >
+               {!map ? (
+                  <img src='./assets/ireland.svg' alt='Ireland image' className='card__img' />
+               ) : (
+                  <iframe
+                     className='card__img--iframe'
+                     allowFullScreen
+                     src={`https://www.google.com/maps/embed/v1/place?q=${attraction.name.replaceAll(' ', '+')}+${attraction.address.county}&key=AIzaSyDYWfqF0kA-JACNiVeTn4_E7vG4SkCxnoE`}
+                  ></iframe>
+               )}
             </div>
             <div className='card-body'>
                <h5 className='card-title'>{attraction.name}</h5>
@@ -35,14 +42,14 @@ const Card = (props) => {
                <div className='card__btn-container'>
                   <Button
                      fill
-                     click={handleLink}
                      attributes={
-                        !attraction.website && {
-                           ['data-tooltip']: true,
-                           ['data-msg']: 'No Link Available',
-                           disabled: true,
-                           role: 'link',
-                        }
+                        !attraction.website
+                           ? {
+                                ['data-tooltip']: true,
+                                ['data-msg']: 'No Link Available',
+                                disabled: true
+                             }
+                           : { role: 'link' }
                      }
                   >
                      <a
@@ -50,7 +57,11 @@ const Card = (props) => {
                         className={`card__link ${!attraction.website && 'disabled'}`}
                         href={attraction.website}
                      >
-                        {attraction.website ? <i className='fas fa-link' /> : <i className='fas fa-unlink'></i>}
+                        {attraction.website ? (
+                           <i className='fas fa-link' />
+                        ) : (
+                           <i className='fas fa-unlink'></i>
+                        )}
                         <span>Visit Site</span>
                      </a>
                   </Button>

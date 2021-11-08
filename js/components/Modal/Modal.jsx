@@ -1,6 +1,7 @@
 const Modal = props => {
-   const { _edit } = useContext(DataCtx)
+   const { _edit, _add } = useContext(DataCtx)
    const [edit, setEdit] = _edit
+   const [add, setAdd] = _add
 
    const close = props.close
    const attraction = props.attr
@@ -33,7 +34,22 @@ const Modal = props => {
 
    const handleConfirm = e => {
       e.preventDefault()
-      if (!addMode) {
+      if (name.length === 0 || locality.length === 0 || county.length === 0) return
+      if (addMode) {
+         const finalEdit = {
+            id: randomId(),
+            name: name,
+            type: type,
+            address: {
+               locality: locality,
+               county: county
+            },
+            tags: tags,
+            phone: phone,
+            website: web
+         }
+         setAdd(finalEdit)
+      } else {
          const finalEdit = {
             id: attraction.id,
             name: name,
@@ -178,6 +194,7 @@ const Modal = props => {
                      large
                      click={expandTags}
                      attributes={{ role: 'button', id: 'tag-button' }}
+                     active={tagListOpen}
                   >
                      <i className={`fas fa-chevron-${tagListOpen ? 'down' : 'up'}`}></i>
                   </Button>
@@ -190,6 +207,7 @@ const Modal = props => {
                      large
                      click={expandTypes}
                      attributes={{ role: 'button', id: 'type-button' }}
+                     active={typeListOpen}
                   >
                      <i className={`fas fa-chevron-${typeListOpen ? 'down' : 'up'}`}></i>
                   </Button>
